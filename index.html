@@ -1,0 +1,1521 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>한양대 ERICA 러브 시뮬레이션 시즌 2 - 조현우 선배</title>
+  <style>
+    :root {
+      --ink: #251d25;
+      --muted: #746775;
+      --panel: rgba(255, 250, 253, 0.92);
+      --line: rgba(57, 45, 61, 0.14);
+      --rose: #ff7295;
+      --rose-deep: #d94c73;
+      --mint: #67c7ae;
+      --sky: #7ab4e8;
+      --sun: #ffd37a;
+      --shadow: 0 24px 70px rgba(71, 39, 64, 0.22);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: "Pretendard", "Apple SD Gothic Neo", "Malgun Gothic", system-ui, sans-serif;
+      color: var(--ink);
+      background: #f7f3ef;
+      overflow: hidden;
+    }
+
+    button {
+      font: inherit;
+      color: inherit;
+    }
+
+    .game {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+      isolation: isolate;
+      background: linear-gradient(180deg, #f8fbff 0%, #fdf6f4 52%, #f5ede7 100%);
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    input,
+    textarea {
+      user-select: text;
+      -webkit-user-select: text;
+    }
+
+    .background {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      transition: background 600ms ease;
+    }
+
+    .background::before,
+    .background::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+    }
+
+    .bg-campus {
+      background:
+        linear-gradient(180deg, rgba(151, 207, 246, 0.92) 0%, rgba(255, 244, 222, 0.95) 58%, rgba(210, 235, 215, 0.98) 100%);
+    }
+
+    .bg-campus::before {
+      background:
+        linear-gradient(90deg, transparent 0 8%, rgba(255,255,255,0.7) 8% 9%, transparent 9% 100%),
+        linear-gradient(13deg, transparent 0 48%, rgba(92, 127, 95, 0.5) 48% 50%, transparent 50%),
+        linear-gradient(0deg, transparent 0 65%, rgba(255,255,255,0.35) 65% 66%, transparent 66%),
+        radial-gradient(circle at 15% 22%, rgba(255,255,255,0.9) 0 8%, transparent 8.5%),
+        linear-gradient(180deg, transparent 0 46%, rgba(50, 91, 96, 0.18) 46% 47%, transparent 47%),
+        linear-gradient(90deg, rgba(83, 122, 133, 0.35) 0 14%, transparent 14% 28%, rgba(83, 122, 133, 0.35) 28% 42%, transparent 42% 100%);
+      clip-path: polygon(0 0, 100% 0, 100% 76%, 0 91%);
+      opacity: 0.8;
+    }
+
+    .bg-campus::after {
+      background:
+        linear-gradient(175deg, transparent 0 60%, rgba(255,255,255,0.75) 60% 66%, transparent 66%),
+        linear-gradient(90deg, transparent 0 4%, rgba(77, 143, 105, 0.28) 4% 7%, transparent 7% 15%, rgba(77, 143, 105, 0.28) 15% 19%, transparent 19% 100%),
+        linear-gradient(180deg, transparent 0 72%, rgba(132, 96, 72, 0.22) 72% 100%);
+      opacity: 0.9;
+    }
+
+    .bg-classroom {
+      background:
+        linear-gradient(180deg, #e8f2ff 0%, #fff8ed 52%, #ede5dd 100%);
+    }
+
+    .bg-classroom::before {
+      background:
+        linear-gradient(90deg, rgba(255,255,255,0.9) 0 10%, transparent 10% 13%, rgba(255,255,255,0.9) 13% 23%, transparent 23% 100%),
+        linear-gradient(180deg, transparent 0 16%, rgba(56, 121, 111, 0.72) 16% 54%, transparent 54%),
+        linear-gradient(90deg, transparent 0 18%, rgba(255,255,255,0.25) 18% 19%, transparent 19% 36%, rgba(255,255,255,0.25) 36% 37%, transparent 37%),
+        linear-gradient(0deg, transparent 0 62%, rgba(88, 68, 54, 0.34) 62% 64%, transparent 64%);
+      clip-path: polygon(5% 8%, 95% 8%, 100% 79%, 0 84%);
+    }
+
+    .bg-classroom::after {
+      background:
+        repeating-linear-gradient(8deg, transparent 0 58px, rgba(99, 77, 63, 0.18) 59px 64px),
+        linear-gradient(180deg, transparent 0 76%, rgba(95, 67, 52, 0.2) 76% 100%);
+      opacity: 0.65;
+    }
+
+    .bg-club {
+      background:
+        linear-gradient(180deg, #fff5e3 0%, #f8e7de 55%, #eadfd7 100%);
+    }
+
+    .bg-club::before {
+      background:
+        linear-gradient(90deg, transparent 0 14%, rgba(255,255,255,0.6) 14% 30%, transparent 30% 100%),
+        linear-gradient(180deg, rgba(107, 92, 78, 0.24) 0 17%, transparent 17% 100%),
+        radial-gradient(circle at 22% 68%, rgba(103, 199, 174, 0.42) 0 10%, transparent 10.5%),
+        radial-gradient(circle at 38% 67%, rgba(255, 211, 122, 0.55) 0 7%, transparent 7.5%),
+        radial-gradient(circle at 54% 68%, rgba(122, 180, 232, 0.44) 0 8%, transparent 8.5%);
+    }
+
+    .bg-club::after {
+      background:
+        linear-gradient(0deg, rgba(117, 82, 63, 0.28) 0 25%, transparent 25%),
+        linear-gradient(90deg, transparent 0 20%, rgba(94, 60, 45, 0.24) 20% 84%, transparent 84%),
+        repeating-linear-gradient(90deg, transparent 0 68px, rgba(94, 60, 45, 0.16) 69px 72px);
+      opacity: 0.8;
+    }
+
+    .bg-cafe {
+      background:
+        linear-gradient(180deg, #fff0d3 0%, #ffdcd6 47%, #f1d8c7 100%);
+    }
+
+    .bg-cafe::before {
+      background:
+        radial-gradient(circle at 20% 18%, rgba(255, 211, 122, 0.8) 0 7%, transparent 7.5%),
+        radial-gradient(circle at 78% 20%, rgba(255,255,255,0.62) 0 10%, transparent 10.5%),
+        linear-gradient(90deg, rgba(255,255,255,0.55) 0 20%, transparent 20% 100%),
+        linear-gradient(180deg, transparent 0 58%, rgba(77, 52, 43, 0.22) 58% 100%);
+    }
+
+    .bg-cafe::after {
+      background:
+        linear-gradient(90deg, transparent 0 26%, rgba(255,255,255,0.52) 26% 74%, transparent 74%),
+        linear-gradient(180deg, transparent 0 71%, rgba(130, 78, 61, 0.27) 71% 74%, transparent 74%);
+      opacity: 0.9;
+    }
+
+    .bg-lake {
+      background:
+        linear-gradient(180deg, #9ccdf2 0%, #ffe5b7 43%, #e9f1ce 63%, #9dc9d3 64%, #79afc5 100%);
+    }
+
+    .bg-lake::before {
+      background:
+        radial-gradient(circle at 82% 15%, rgba(255, 237, 163, 0.95) 0 8%, transparent 8.5%),
+        linear-gradient(7deg, transparent 0 51%, rgba(81, 137, 91, 0.38) 51% 60%, transparent 60%),
+        linear-gradient(-8deg, transparent 0 48%, rgba(81, 137, 91, 0.32) 48% 58%, transparent 58%);
+    }
+
+    .bg-lake::after {
+      background:
+        repeating-linear-gradient(178deg, rgba(255,255,255,0.22) 0 2px, transparent 2px 42px),
+        linear-gradient(180deg, transparent 0 76%, rgba(255,255,255,0.16) 76% 100%);
+      opacity: 0.75;
+    }
+
+    .topbar {
+      position: absolute;
+      top: 18px;
+      left: 18px;
+      right: 18px;
+      z-index: 5;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 12px;
+      align-items: center;
+      pointer-events: none;
+    }
+
+    .title-chip,
+    .meter {
+      pointer-events: auto;
+      border: 1px solid rgba(255,255,255,0.58);
+      background: rgba(255, 255, 255, 0.58);
+      backdrop-filter: blur(16px);
+      box-shadow: 0 12px 28px rgba(71, 39, 64, 0.12);
+      border-radius: 999px;
+    }
+
+    .title-chip {
+      width: fit-content;
+      padding: 10px 15px;
+      font-weight: 800;
+      letter-spacing: 0;
+    }
+
+    .meter {
+      min-width: 210px;
+      padding: 10px 12px;
+    }
+
+    .meter-label {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      font-size: 13px;
+      font-weight: 800;
+      color: #5e4d5b;
+      margin-bottom: 7px;
+    }
+
+    .meter-track {
+      height: 10px;
+      border-radius: 999px;
+      overflow: hidden;
+      background: rgba(74, 58, 70, 0.16);
+    }
+
+    .meter-fill {
+      height: 100%;
+      width: 15%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, var(--mint), var(--rose), var(--sun));
+      transition: width 450ms ease;
+    }
+
+    .stage {
+      position: absolute;
+      inset: 0;
+      z-index: 2;
+    }
+
+    .character {
+      position: absolute;
+      left: 50%;
+      bottom: 112px;
+      width: min(43vw, 480px);
+      max-height: 78vh;
+      transform: translateX(-50%);
+      object-fit: contain;
+      object-position: center bottom;
+      filter: drop-shadow(0 30px 40px rgba(45, 32, 45, 0.26));
+      transition: opacity 280ms ease, transform 380ms ease, filter 280ms ease;
+      user-select: none;
+    }
+
+    .character.hidden {
+      opacity: 0;
+      transform: translateX(-50%) translateY(16px);
+    }
+
+    .heart {
+      position: absolute;
+      z-index: 1;
+      color: rgba(255, 114, 149, 0.55);
+      font-size: 28px;
+      animation: floatHeart 5s ease-in-out infinite;
+      text-shadow: 0 6px 20px rgba(255, 114, 149, 0.26);
+    }
+
+    .heart:nth-child(1) { left: 17%; top: 28%; animation-delay: -1s; }
+    .heart:nth-child(2) { right: 18%; top: 34%; animation-delay: -2.4s; font-size: 20px; }
+    .heart:nth-child(3) { left: 34%; top: 17%; animation-delay: -3.5s; font-size: 18px; }
+    .heart:nth-child(4) { right: 32%; top: 23%; animation-delay: -0.3s; font-size: 24px; }
+
+    @keyframes floatHeart {
+      0%, 100% { transform: translateY(0) rotate(-4deg); opacity: 0.28; }
+      45% { transform: translateY(-24px) rotate(5deg); opacity: 0.76; }
+    }
+
+    .dialogue {
+      position: absolute;
+      left: 50%;
+      bottom: 22px;
+      z-index: 6;
+      width: min(1100px, calc(100vw - 34px));
+      min-height: 190px;
+      transform: translateX(-50%);
+      padding: 20px;
+      border: 1px solid rgba(255,255,255,0.66);
+      border-radius: 8px;
+      background: var(--panel);
+      backdrop-filter: blur(18px);
+      box-shadow: var(--shadow);
+    }
+
+    .name {
+      display: inline-flex;
+      align-items: center;
+      min-height: 36px;
+      padding: 7px 13px;
+      margin-bottom: 10px;
+      border-radius: 999px;
+      color: white;
+      background: linear-gradient(135deg, #3b7f93, #d94c73);
+      font-weight: 900;
+      box-shadow: 0 10px 20px rgba(217, 76, 115, 0.22);
+    }
+
+    .text {
+      min-height: 64px;
+      font-size: clamp(18px, 2vw, 23px);
+      line-height: 1.62;
+      word-break: keep-all;
+    }
+
+    .controls {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: flex-end;
+      margin-top: 12px;
+    }
+
+    .hint {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.4;
+    }
+
+    .next,
+    .choice,
+    .small {
+      border: 0;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: transform 160ms ease, box-shadow 160ms ease, background 160ms ease;
+    }
+
+    .next {
+      min-width: 142px;
+      padding: 13px 18px;
+      color: white;
+      background: linear-gradient(135deg, var(--rose), #ef8a55);
+      font-weight: 900;
+      box-shadow: 0 14px 28px rgba(217, 76, 115, 0.26);
+    }
+
+    .next:hover,
+    .choice:hover,
+    .small:hover {
+      transform: translateY(-2px);
+    }
+
+    .choice-wrap {
+      display: none;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .choice {
+      min-height: 58px;
+      padding: 12px 14px;
+      text-align: left;
+      background: rgba(255, 255, 255, 0.8);
+      border: 1px solid var(--line);
+      font-weight: 800;
+      box-shadow: 0 10px 20px rgba(71, 39, 64, 0.08);
+    }
+
+    .choice small {
+      display: block;
+      margin-top: 4px;
+      color: var(--muted);
+      font-weight: 700;
+      line-height: 1.35;
+    }
+
+    .choice-input {
+      width: 100%;
+      padding: 13px 14px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.88);
+      color: var(--ink);
+      font: inherit;
+      font-weight: 800;
+      outline: none;
+    }
+
+    .choice-input:focus {
+      border-color: rgba(255, 114, 149, 0.88);
+      box-shadow: 0 0 0 4px rgba(255, 114, 149, 0.16);
+    }
+
+    .menu {
+      position: absolute;
+      right: 18px;
+      bottom: 232px;
+      z-index: 7;
+      display: flex;
+      gap: 8px;
+    }
+
+    .small {
+      width: 42px;
+      height: 42px;
+      border: 1px solid rgba(255,255,255,0.6);
+      background: rgba(255,255,255,0.62);
+      backdrop-filter: blur(14px);
+      box-shadow: 0 10px 20px rgba(71, 39, 64, 0.11);
+      font-weight: 900;
+    }
+
+    .flash {
+      position: absolute;
+      inset: 0;
+      z-index: 4;
+      opacity: 0;
+      pointer-events: none;
+      background: radial-gradient(circle at 50% 42%, rgba(255, 255, 255, 0.86), transparent 56%);
+      transition: opacity 400ms ease;
+    }
+
+    .flash.on { opacity: 1; }
+
+    .toast {
+      position: absolute;
+      left: 50%;
+      top: 76px;
+      z-index: 8;
+      transform: translateX(-50%) translateY(-14px);
+      opacity: 0;
+      padding: 10px 14px;
+      border-radius: 999px;
+      color: white;
+      background: rgba(217, 76, 115, 0.92);
+      box-shadow: 0 12px 30px rgba(217, 76, 115, 0.28);
+      font-weight: 900;
+      transition: opacity 220ms ease, transform 220ms ease;
+      pointer-events: none;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    .ending-card {
+      position: absolute;
+      inset: 0;
+      z-index: 9;
+      display: none;
+      place-items: center;
+      padding: 22px;
+      background: rgba(255, 246, 249, 0.5);
+      backdrop-filter: blur(7px);
+    }
+
+    .ending-card.show { display: grid; }
+
+    .ending-inner {
+      width: min(760px, 100%);
+      padding: 26px;
+      border-radius: 8px;
+      border: 1px solid rgba(255,255,255,0.74);
+      background: rgba(255,255,255,0.88);
+      box-shadow: var(--shadow);
+      text-align: center;
+    }
+
+    .ending-inner h1 {
+      margin: 0 0 12px;
+      font-size: clamp(30px, 5vw, 52px);
+      letter-spacing: 0;
+    }
+
+    .ending-inner p {
+      margin: 0 auto 18px;
+      max-width: 620px;
+      color: #5d505d;
+      font-size: 18px;
+      line-height: 1.7;
+      word-break: keep-all;
+    }
+
+    .ending-actions {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .ending-actions button {
+      padding: 12px 16px;
+      border: 0;
+      border-radius: 8px;
+      background: var(--ink);
+      color: white;
+      font-weight: 900;
+      cursor: pointer;
+    }
+
+    .ending-actions button:first-child {
+      background: linear-gradient(135deg, var(--rose), #ef8a55);
+    }
+
+    .title-screen {
+      position: absolute;
+      inset: 0;
+      z-index: 20;
+      display: grid;
+      place-items: center;
+      overflow: hidden;
+      cursor: pointer;
+      background:
+        linear-gradient(180deg, rgba(255, 247, 251, 0.22), rgba(38, 24, 35, 0.4)),
+        url("assets/bg-campus.png") center / cover no-repeat;
+      transition: opacity 520ms ease, visibility 520ms ease;
+    }
+
+    .title-screen.hide {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    .title-screen::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(circle at 50% 36%, rgba(255,255,255,0.7), transparent 25%),
+        linear-gradient(180deg, transparent 0 58%, rgba(255, 114, 149, 0.28) 100%);
+      pointer-events: none;
+    }
+
+    .title-screen::after {
+      content: "♥";
+      position: absolute;
+      top: 17%;
+      right: 23%;
+      color: rgba(255, 114, 149, 0.68);
+      font-size: clamp(34px, 5vw, 72px);
+      filter: drop-shadow(0 10px 26px rgba(217, 76, 115, 0.3));
+      animation: floatHeart 4s ease-in-out infinite;
+    }
+
+    .title-content {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      justify-items: center;
+      gap: 18px;
+      width: min(920px, calc(100vw - 32px));
+      padding-bottom: 84px;
+      text-align: center;
+      color: white;
+      text-shadow: 0 8px 30px rgba(41, 24, 38, 0.42);
+    }
+
+    .title-content h1 {
+      margin: 0;
+      font-size: clamp(48px, 9vw, 104px);
+      line-height: 1.04;
+      letter-spacing: 0;
+      font-weight: 950;
+    }
+
+    .title-content p {
+      margin: 0;
+      max-width: 620px;
+      font-size: clamp(17px, 2.1vw, 24px);
+      font-weight: 800;
+      line-height: 1.55;
+      word-break: keep-all;
+    }
+
+    .touch-play {
+      position: absolute;
+      left: 50%;
+      bottom: 52px;
+      z-index: 2;
+      transform: translateX(-50%);
+      color: white;
+      font-size: clamp(18px, 2.6vw, 30px);
+      font-weight: 950;
+      letter-spacing: 0;
+      text-transform: lowercase;
+      text-shadow: 0 8px 24px rgba(42, 24, 38, 0.48);
+      animation: blinkPlay 1.05s ease-in-out infinite;
+      white-space: nowrap;
+    }
+
+    .nickname-form {
+      position: relative;
+      z-index: 3;
+      width: min(360px, 86vw);
+      margin: 24px auto 0;
+      display: grid;
+      gap: 10px;
+    }
+
+    .nickname-form input {
+      width: 100%;
+      padding: 14px 16px;
+      border: 1px solid rgba(255,255,255,0.72);
+      border-radius: 8px;
+      background: rgba(255,255,255,0.84);
+      color: var(--ink);
+      font: inherit;
+      font-weight: 800;
+      text-align: center;
+      outline: none;
+      box-shadow: 0 12px 28px rgba(42, 24, 38, 0.16);
+    }
+
+    .nickname-form input:focus {
+      border-color: rgba(255, 114, 149, 0.9);
+      box-shadow: 0 0 0 4px rgba(255, 114, 149, 0.22), 0 12px 28px rgba(42, 24, 38, 0.16);
+    }
+
+    .nickname-form button {
+      padding: 13px 16px;
+      border: 0;
+      border-radius: 8px;
+      background: linear-gradient(135deg, var(--rose), #ef8a55);
+      color: #fff;
+      font-weight: 900;
+      cursor: pointer;
+      box-shadow: 0 14px 28px rgba(217, 76, 115, 0.26);
+    }
+
+    @keyframes blinkPlay {
+      0%, 100% { opacity: 0.25; transform: translateX(-50%) translateY(0); }
+      50% { opacity: 1; transform: translateX(-50%) translateY(-4px); }
+    }
+
+    .bg-campus,
+    .bg-classroom,
+    .bg-club,
+    .bg-cafe,
+    .bg-home,
+    .bg-lake,
+    .bg-crossfit,
+    .bg-pcroom,
+    .bg-billiards,
+    .bg-dining,
+    .bg-bandroom,
+    .bg-lakepark,
+    .bg-concert,
+    .bg-performance,
+    .bg-pocha {
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+    }
+
+    .bg-campus { background-image: url("assets/bg-campus.png"); }
+    .bg-classroom { background-image: url("assets/bg-classroom.png"); }
+    .bg-club { background-image: url("assets/bg-club.png"); }
+    .bg-cafe { background-image: url("assets/bg-cafe.png"); }
+    .bg-home { background-image: url("assets/bg-home.png"); }
+    .bg-lake { background-image: url("assets/bg-campus.png"); }
+    .bg-crossfit { background-image: url("assets/bg-crossfit.png"); }
+    .bg-pcroom { background-image: url("assets/bg-pcroom.png"); }
+    .bg-billiards { background-image: url("assets/bg-billiards.png"); }
+    .bg-dining { background-image: url("assets/bg-dining.png"); }
+    .bg-bandroom { background-image: url("assets/bg-bandroom.png"); }
+    .bg-lakepark { background-image: url("assets/bg-lakepark.png"); }
+    .bg-concert { background-image: url("assets/bg-concert.png"); }
+    .bg-performance { background-image: url("assets/bg-performance.png"); }
+    .bg-pocha { background-image: url("assets/bg-pocha.png"); }
+    .bg-black { background: #050505; }
+
+    .bg-campus::before,
+    .bg-classroom::before,
+    .bg-club::before,
+    .bg-cafe::before,
+    .bg-home::before,
+    .bg-lake::before,
+    .bg-crossfit::before,
+    .bg-pcroom::before,
+    .bg-billiards::before,
+    .bg-dining::before,
+    .bg-bandroom::before,
+    .bg-lakepark::before,
+    .bg-concert::before,
+    .bg-performance::before,
+    .bg-pocha::before,
+    .bg-black::before {
+      background: linear-gradient(180deg, rgba(20, 18, 24, 0.08), rgba(20, 18, 24, 0.32));
+      clip-path: none;
+      opacity: 1;
+    }
+
+    .bg-campus::after,
+    .bg-classroom::after,
+    .bg-club::after,
+    .bg-cafe::after,
+    .bg-home::after,
+    .bg-lake::after,
+    .bg-crossfit::after,
+    .bg-pcroom::after,
+    .bg-billiards::after,
+    .bg-dining::after,
+    .bg-bandroom::after,
+    .bg-lakepark::after,
+    .bg-concert::after,
+    .bg-performance::after,
+    .bg-pocha::after,
+    .bg-black::after {
+      background:
+        radial-gradient(circle at 22% 18%, rgba(255,255,255,0.24), transparent 24%),
+        linear-gradient(180deg, transparent 0 55%, rgba(255, 230, 238, 0.18) 100%);
+      opacity: 1;
+    }
+
+    .bg-black::before,
+    .bg-black::after {
+      background: none;
+      opacity: 0;
+    }
+
+    @media (max-width: 760px) {
+      body { overflow: auto; }
+      .game { min-height: 100svh; height: 100svh; overflow: hidden; }
+      .topbar {
+        grid-template-columns: 1fr;
+        right: 14px;
+        left: 14px;
+        top: 12px;
+      }
+      .title-chip {
+        max-width: 100%;
+        font-size: 14px;
+      }
+      .meter {
+        width: min(290px, 100%);
+        min-width: 0;
+      }
+      .character {
+        width: min(76vw, 390px);
+        bottom: 248px;
+      }
+      .dialogue {
+        bottom: 12px;
+        width: calc(100vw - 20px);
+        min-height: 224px;
+        padding: 14px;
+      }
+      .text {
+        min-height: 84px;
+        font-size: 17px;
+        line-height: 1.55;
+      }
+      .choice-wrap {
+        grid-template-columns: 1fr;
+      }
+      .controls {
+        align-items: center;
+      }
+      .hint {
+        font-size: 12px;
+      }
+      .next {
+        min-width: 110px;
+        padding: 12px 14px;
+      }
+      .menu {
+        right: 12px;
+        bottom: 252px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="game" aria-label="연애 시뮬레이션 게임">
+    <section id="titleScreen" class="title-screen" aria-label="게임 타이틀">
+      <div class="title-content">
+        <h1>현우선배와<br />뭉게뭉게!</h1>
+        <p>뭉게구름 밴드 동아리에서 시작되는 캠퍼스 러브 스토리</p>
+        <form id="nicknameForm" class="nickname-form">
+          <input id="nicknameInput" maxlength="12" autocomplete="off" placeholder="닉네임 입력" aria-label="닉네임" />
+          <button type="submit">시작하기</button>
+        </form>
+      </div>
+      <div class="touch-play">nickname to play!</div>
+    </section>
+    <div id="bg" class="background bg-campus"></div>
+    <div class="stage" aria-hidden="true">
+      <span class="heart">♥</span>
+      <span class="heart">♥</span>
+      <span class="heart">♥</span>
+      <span class="heart">♥</span>
+      <img id="sprite" class="character hidden" src="assets/hyunwoo-normal.png" alt="" />
+    </div>
+    <div id="flash" class="flash"></div>
+    <div class="topbar">
+      <div class="title-chip">한양대 ERICA 러브 시뮬레이션 시즌 2: 조현우 선배와 뭉게구름</div>
+      <div class="meter" aria-label="호감도">
+        <div class="meter-label"><span>설렘도</span><span id="affectionText">15%</span></div>
+        <div class="meter-track"><div id="affectionFill" class="meter-fill"></div></div>
+      </div>
+    </div>
+    <div id="toast" class="toast">설렘도 +5</div>
+    <div class="menu">
+      <button id="musicBtn" class="small" title="배경음악 켜기/끄기">♪</button>
+      <button id="autoBtn" class="small" title="자동 진행">▶</button>
+      <button id="skipBtn" class="small" title="빠르게 넘기기">»</button>
+    </div>
+    <audio id="bgm" src="assets/bgm-purrfect-lovely-day.mp3" loop preload="auto"></audio>
+    <section class="dialogue" aria-live="polite">
+      <div id="speaker" class="name">주인공</div>
+      <div id="line" class="text"></div>
+      <div id="choices" class="choice-wrap"></div>
+      <div class="controls">
+        <div class="hint">클릭하거나 Space/Enter를 누르면 진행됩니다. 선택지는 설렘도를 바꿔요.</div>
+        <button id="nextBtn" class="next">다음</button>
+      </div>
+    </section>
+    <section id="ending" class="ending-card" aria-modal="true">
+      <div class="ending-inner">
+        <h1>러브 엔딩</h1>
+        <p id="endingText"></p>
+        <div class="ending-actions">
+          <button id="restartBtn">처음부터 다시</button>
+          <button id="bonusBtn">고백 장면 다시 보기</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const sprites = {
+      none: "",
+      normal: "assets/hyunwoo-normal.png",
+      smile: "assets/hyunwoo-smile.png",
+      sad: "assets/hyunwoo-sad.png",
+      surprised: "assets/hyunwoo-surprised.png",
+      angry: "assets/hyunwoo-angry.png",
+      love: "assets/hyunwoo-love.png",
+      bass: "assets/hyunwoo-bass.png",
+      borongi: "assets/borongi.png",
+      geunwoo: "assets/geunwoo-normal.png"
+    };
+
+    const scenes = [
+      {
+        bg: "campus",
+        speaker: "나",
+        sprite: "none",
+        text: "입학하고 처음 맞는 봄, 한양대 ERICA 캠퍼스는 사람 소리로 가득했다. 동아리 가두모집 부스들이 길게 늘어서 있었고, 나는 아직 이름표도 어색한 1학년이었다."
+      },
+      {
+        bg: "campus",
+        speaker: "나",
+        sprite: "none",
+        text: "보드게임, 밴드, 운동, 봉사, 사진... 부스마다 선배들이 웃으며 전단지를 건넸다. 어디에도 속하지 않은 채 구경만 하는데, 익숙한 흰 티와 헤드폰이 보였다."
+      },
+      {
+        bg: "campus",
+        speaker: "최근우",
+        sprite: "geunwoo",
+        text: "“신입생이에요? 기우회 들어와요. 보드게임 카페 동아리인데, 룰은 제가 아주 친절하게 설명해드립니다.”"
+      },
+      {
+        bg: "campus",
+        speaker: "나",
+        sprite: "geunwoo",
+        text: "최근우 선배는 손에 든 카드를 흔들며 웃었다. 나는 살짝 끌렸지만, 아직 다른 부스도 보고 싶었다."
+      },
+      {
+        bg: "campus",
+        speaker: "나",
+        sprite: "geunwoo",
+        text: "“생각해볼게요. 다른 동아리도 조금만 더 둘러보고 올게요.”"
+      },
+      {
+        bg: "campus",
+        speaker: "최근우",
+        sprite: "geunwoo",
+        text: "“그럼 꼭 다시 와요. 안 오면 제가 보드게임 말고 인생 게임에서 졌다고 생각할게요.”"
+      },
+      {
+        bg: "campus",
+        speaker: "나",
+        sprite: "none",
+        text: "그때 어디선가 낮고 부드러운 베이스 소리가 들려왔다. 사람들 말소리 사이를 가르는데, 이상하게 발걸음이 그쪽으로 끌렸다."
+      },
+      {
+        bg: "campus",
+        speaker: "나",
+        sprite: "bass",
+        text: "소리의 끝에는 ‘뭉게구름’이라고 적힌 밴드 동아리 부스가 있었다. 그리고 조현우 선배가 의자에 앉아 베이스를 치고 있었다. 손끝이 줄을 스칠 때마다 공기가 반짝이는 것 같았다."
+      },
+      {
+        bg: "campus",
+        speaker: "조현우",
+        sprite: "smile",
+        text: "“들으러 온 거예요? 아니면 가입하러 온 거예요? 둘 다면 제일 좋고요.”"
+      },
+      {
+        bg: "campus",
+        speaker: "조현우",
+        sprite: "normal",
+        text: "“나는 조현우. 뭉게구름 회장이었고, 지금은 그냥 부스 지키는 과탑 선배입니다. 올 A+의 신뢰로 말하는데, 우리 동아리 꽤 좋아요.”"
+      },
+      {
+        bg: "campus",
+        speaker: "나",
+        sprite: "normal",
+        text: "“제 이름은 {name}, 1학년이에요. 악기는 잘 모르는데... 방금 베이스 소리가 너무 좋아서 왔어요.”"
+      },
+      {
+        bg: "campus",
+        speaker: "조현우",
+        sprite: "love",
+        text: "“그럼 이미 반은 들어온 거네요. 좋은 소리를 알아듣는 사람은 우리 동아리에 필요하거든요.”",
+        affection: 6
+      },
+      {
+        bg: "campus",
+        speaker: "선택",
+        sprite: "smile",
+        text: "뭉게구름 가입원서가 눈앞에 놓였다.",
+        choices: [
+          { label: "바로 가입한다", affection: 10, result: "나는 이름을 적었다. 현우 선배가 펜 끝을 보며 웃었다. “환영해요, {name}씨. 오늘 제일 좋은 신입생을 만났네요.”" },
+          { label: "베이스를 조금 더 듣고 가입한다", affection: 8, result: "현우 선배는 짧은 리프를 한 번 더 연주했다. 마지막 음이 멈추자마자 나는 가입원서에 이름을 적었다." },
+          { label: "망설이다가 가입한다", affection: 4, result: "“망설여도 괜찮아요.” 현우 선배가 말했다. “중요한 선택은 천천히 해도 돼요. 대신 음악은 시작하면 오래 남아요.”" }
+        ]
+      },
+      { bg: "black", speaker: "", sprite: "none", text: "며칠 후." },
+      {
+        bg: "pocha",
+        speaker: "나",
+        sprite: "none",
+        text: "뭉게구름 동아리 술자리. 나는 아직 이름을 다 외우지도 못했는데, 조현우 선배는 누가 물이 필요한지, 누가 안주를 못 집는지 전부 보고 있었다."
+      },
+      {
+        bg: "pocha",
+        speaker: "조현우",
+        sprite: "smile",
+        text: "“{name}씨, 이쪽 앉아요. 술은 천천히 마시고, 배고프면 먼저 먹어요. 신입생이 굶으면 회장이 혼납니다.”"
+      },
+      {
+        bg: "pocha",
+        speaker: "나",
+        sprite: "smile",
+        text: "회장이라 그런지 모두를 챙겼지만, 내 잔이 비는 순간만큼은 이상하게 더 빨리 알아차렸다."
+      },
+      {
+        bg: "pocha",
+        speaker: "선택",
+        sprite: "normal",
+        text: "현우 선배가 내 접시에 치킨을 하나 올려준다.",
+        choices: [
+          { label: "“선배는 진짜 다 챙기네요.”", affection: 9, result: "“다 챙기는 척하면서 사실 {name}씨 쪽을 제일 많이 보고 있었는데.” 현우 선배는 아무렇지 않게 말하고 물을 따랐다." },
+          { label: "“저도 선배 챙겨드릴게요.”", affection: 11, result: "내가 안주를 집어주자 현우 선배가 잠깐 말을 잃었다. “이거 생각보다 좋네요. 챙김 받는 거.”" },
+          { label: "“혼자 먹을 수 있어요.”", affection: -5, result: "현우 선배가 조용히 손을 거뒀다. “그렇죠. 미안해요, 내가 너무 앞서갔나.”" }
+        ]
+      },
+      { bg: "black", speaker: "", sprite: "none", text: "다음 날." },
+      {
+        bg: "bandroom",
+        speaker: "조현우",
+        sprite: "normal",
+        text: "“{name}씨는 다룰 수 있는 악기 있어요?”"
+      },
+      {
+        bg: "bandroom",
+        speaker: "나",
+        sprite: "surprised",
+        text: "“없어요. 리코더도 수행평가 이후로는 거의...”"
+      },
+      {
+        bg: "bandroom",
+        speaker: "조현우",
+        sprite: "smile",
+        text: "“좋아요. 그럼 내가 베이스 알려줄게요. 정기공연에 같이 팀으로 나가요. 나는 보컬 할게요. {name}씨는 베이스.”"
+      },
+      {
+        bg: "bandroom",
+        speaker: "조현우",
+        sprite: "normal",
+        text: "“팀명은 뭘로 할까요? 이건 {name}씨가 정해줘요.”",
+        input: { key: "teamName", placeholder: "팀명 입력", button: "팀명 정하기" }
+      },
+      {
+        bg: "bandroom",
+        speaker: "조현우",
+        sprite: "love",
+        text: "“{team}? 좋은데요. 이름만 들어도 이미 공연 잘할 것 같아요.”"
+      },
+      {
+        bg: "bandroom",
+        speaker: "조현우",
+        sprite: "normal",
+        text: "“곡도 골라볼래요? 내가 보컬로 부를게요. 대신 {name}씨가 고른 곡이면 연습은 진짜 열심히 해야 합니다.”",
+        input: { key: "songTitle", placeholder: "노래 제목 입력", button: "곡 정하기" }
+      },
+      {
+        bg: "bandroom",
+        speaker: "조현우",
+        sprite: "smile",
+        text: "“{song}? 좋은 생각이다! 그거 정말 좋은 곡이지. 연습 열심히 할게.”",
+        affection: 8
+      },
+      { bg: "black", speaker: "", sprite: "none", text: "며칠 뒤." },
+      {
+        bg: "bandroom",
+        speaker: "나",
+        sprite: "none",
+        text: "그 뒤로 우리는 매주 동아리방에서 합주 연습을 했다. 드럼은 박자를 세고, 기타는 코드를 맞추고, 나는 손끝에 굳은살이 생기는 법을 배웠다."
+      },
+      {
+        bg: "bandroom",
+        speaker: "나",
+        sprite: "normal",
+        text: "현우 선배는 보컬 마이크 앞에 서면 전혀 다른 사람이 됐다. 노래하는 얼굴이 너무 진지해서, 나는 베이스 줄보다 선배 얼굴을 더 많이 보고 말았다."
+      },
+      {
+        bg: "bandroom",
+        speaker: "조현우",
+        sprite: "smile",
+        text: "“{name}씨, 방금 코드 말고 나 봤죠?”"
+      },
+      {
+        bg: "bandroom",
+        speaker: "선택",
+        sprite: "smile",
+        text: "들켰다. 완전히 들켰다.",
+        choices: [
+          { label: "“보컬 확인도 연습이잖아요.”", affection: 10, result: "현우 선배가 웃음을 참으며 악보를 내려다봤다. “그럼 저도 베이스 확인 좀 자주 해야겠네요.”" },
+          { label: "“선배가 너무 잘해서요.”", affection: 12, result: "“그런 말은 공연 끝나고 해요.” 선배가 말했지만 귀 끝이 빨개졌다." },
+          { label: "“아니요, 악보 봤는데요.”", affection: -4, result: "현우 선배가 장난스레 눈을 좁혔다. “거짓말도 박자 맞춰서 해야죠.”" }
+        ]
+      },
+      { bg: "black", speaker: "", sprite: "none", text: "며칠 뒤." },
+      {
+        bg: "pcroom",
+        speaker: "조현우",
+        sprite: "normal",
+        text: "“연습만 하면 손목 굳어요. 오늘은 PC방 갈래요? 데이트 신청 맞고, 게임은 제가 생각보다 못합니다.”"
+      },
+      {
+        bg: "pcroom",
+        speaker: "선택",
+        sprite: "smile",
+        text: "현우 선배가 옆자리 의자를 빼준다.",
+        choices: [
+          { label: "롤", affection: 7, result: "현우 선배는 라인전보다 채팅 매너가 더 완벽했다. “올 A+도 갱킹은 못 피하네요.”" },
+          { label: "피파", affection: 6, result: "전반전 내내 전술 얘기를 하던 선배는 후반전에 역전골을 먹고 조용히 웃었다. “이건 스포츠 드라마예요.”" },
+          { label: "배그", affection: 8, result: "선배는 침착하게 브리핑하다가 창문으로 뛰어내렸다. 완벽한 선배도 낙하 데미지는 몰랐다." },
+          { label: "쥬쥬의 옷입히기", affection: 12, result: "현우 선배는 색 조합을 진심으로 고민했다. “무대 의상도 결국 밸런스거든요.”" }
+        ]
+      },
+      {
+        bg: "pcroom",
+        speaker: "나",
+        sprite: "love",
+        text: "게임을 하다 보니 연습실의 긴장감이 조금 풀렸다. 현우 선배는 이기는 법보다 같이 웃는 법을 더 잘 아는 사람 같았다."
+      },
+      { bg: "black", speaker: "", sprite: "none", text: "어느 날 밤." },
+      {
+        bg: "home",
+        speaker: "나",
+        sprite: "none",
+        text: "방에서 쉬고 있는데 휴대폰이 울렸다. 화면에는 조현우 선배 이름이 떠 있었다."
+      },
+      {
+        bg: "home",
+        speaker: "조현우",
+        sprite: "normal",
+        text: "“{name}씨, 잠깐 집 앞에 나올 수 있어요? 혼자는 아니고... 소개해주고 싶은 친구가 있어요.”"
+      },
+      {
+        bg: "campus",
+        speaker: "나",
+        sprite: "borongi",
+        text: "집 앞에는 하얀 말티즈가 꼬리를 흔들고 있었다. 머리 위 분홍 리본이 흔들릴 때마다 세상이 잠깐 말랑해졌다."
+      },
+      {
+        bg: "campus",
+        speaker: "조현우",
+        sprite: "smile",
+        text: "“뽀롱이예요. 말티즈고, 집에서는 저보다 서열이 높아요. 같이 산책할래요?”"
+      },
+      {
+        bg: "campus",
+        speaker: "나",
+        sprite: "borongi",
+        text: "우리는 학교 길을 천천히 걸었다. 뽀롱이는 앞서가다가도 자꾸 뒤돌아봤고, 현우 선배는 그때마다 줄을 살짝 늦춰줬다.",
+        affection: 7
+      },
+      { bg: "black", speaker: "", sprite: "none", text: "다음 날." },
+      {
+        bg: "dining",
+        speaker: "나",
+        sprite: "none",
+        text: "수업이 끝나자 배가 고파서 학생식당에 왔다. 혼자 먹을 생각으로 식판을 들었는데, 창가 자리에서 현우 선배가 손을 들었다."
+      },
+      {
+        bg: "dining",
+        speaker: "조현우",
+        sprite: "smile",
+        text: "“{name}씨, 여기 앉아요. 혼밥도 좋지만 오늘은 같이 먹으면 더 맛있을 것 같아서요.”"
+      },
+      {
+        bg: "dining",
+        speaker: "나",
+        sprite: "normal",
+        text: "밥을 먹는 동안 선배는 전공 얘기, 공연 얘기, 뽀롱이의 이상한 식성까지 차분하게 들려줬다. 과탑이라는 말이 멀게 느껴질 만큼 편했다."
+      },
+      {
+        bg: "lakepark",
+        speaker: "나",
+        sprite: "none",
+        text: "식사 후 우리는 호수공원 쪽으로 걸었다. 물빛이 반짝였고, 선배는 난간에 기대 장난스러운 얼굴을 했다."
+      },
+      {
+        bg: "lakepark",
+        speaker: "조현우",
+        sprite: "smile",
+        text: "“저기 물에 빠지면 100만원 줄게요.”"
+      },
+      {
+        bg: "lakepark",
+        speaker: "선택",
+        sprite: "surprised",
+        text: "갑작스러운 제안이다.",
+        choices: [
+          { label: "빠진다", affection: 10, result: "내가 난간 쪽으로 한 발 내딛자 현우 선배가 바로 앞을 막아섰다. “농담이에요. 100만원보다 {name}씨가 훨씬 비싸요.”" },
+          { label: "안 빠진다", affection: 7, result: "“현명해요.” 현우 선배가 웃었다. “역시 우리 팀 베이스는 판단력이 좋아야죠.”" }
+        ]
+      },
+      { bg: "black", speaker: "", sprite: "none", text: "며칠 뒤, 공연날." },
+      {
+        bg: "concert",
+        speaker: "나",
+        sprite: "none",
+        text: "공연장 객석을 보는 순간 손끝이 차가워졌다. 팀 {team}, 곡은 {song}. 몇 주 동안 연습한 모든 소리가 오늘 한 번에 지나갈 예정이었다."
+      },
+      {
+        bg: "concert",
+        speaker: "조현우",
+        sprite: "normal",
+        text: "“긴장돼요? 괜찮아요. 틀려도 내가 노래로 덮을게요. 대신 잘하면 내가 제일 먼저 박수칠 거예요.”"
+      },
+      {
+        bg: "performance",
+        speaker: "나",
+        sprite: "none",
+        text: "조명이 켜지고, 드럼 카운트가 시작됐다. 내 베이스가 첫 박자를 밀어냈고, 현우 선배의 목소리가 그 위에 얹혔다. 우리는 성공적으로 공연을 끝냈다."
+      },
+      {
+        bg: "performance",
+        speaker: "조현우",
+        sprite: "love",
+        text: "“해냈다, {name}씨. 진짜 해냈어요.”",
+        affection: 12
+      },
+      {
+        bg: "concert",
+        speaker: "조현우",
+        sprite: "love",
+        text: "“사실 {song} 준비하면서 매번 떨렸어요. 이 곡, 언젠가 {name}씨에게 불러주고 싶은 곡이었거든요.”"
+      },
+      {
+        bg: "concert",
+        speaker: "조현우",
+        sprite: "love",
+        text: "“나 {name}씨 많이 좋아해요. 뭉게구름 회장 말고, 그냥 조현우로. 나랑 사귀어줘요.”",
+        choices: [
+          { label: "“좋아요. 앞으로도 같이 연주해요.”", affection: 15, result: "현우 선배는 숨을 크게 내쉬고 웃었다. “그럼 다음 곡도 같이 정해요. 이번엔 연애하는 팀으로.”" },
+          { label: "“미안해요. 저는 선배를 그런 마음으로 보진 않아요.”", affection: -30, speaker: "조현우", sprite: "sad", result: "조현우 선배는 눈물이 그렁그렁한 얼굴로 뒷걸음질쳤다. “하 씨발.. 이제 학교 어케다니노.” 그리고 그대로 무대 뒤로 달려가 버렸다.", gameOver: true }
+        ]
+      },
+      {
+        bg: "concert",
+        speaker: "조현우",
+        sprite: "love",
+        text: "“진짜요? 우리... 사귀는 거예요?”"
+      },
+      {
+        bg: "concert",
+        speaker: "나",
+        sprite: "love",
+        text: "현우 선배는 마이크보다 조심스럽게 내 손을 잡았다. 공연장의 마지막 조명이 우리 둘 위에 오래 머물렀다."
+      },
+      {
+        bg: "campus",
+        speaker: "엔딩",
+        sprite: "love",
+        text: "봄의 ERICA, 뭉게구름, 팀 {team}, 그리고 조현우. 우리의 첫 공연은 끝났지만, 둘만의 앙코르는 이제 시작이었다.",
+        end: true
+      }
+    ];
+
+    const state = {
+      index: 0,
+      affection: 15,
+      playerName: "주인공",
+      teamName: "뭉게듀오",
+      songTitle: "밤편지",
+      auto: false,
+      typing: false,
+      currentText: "",
+      timer: null
+    };
+
+    const bg = document.getElementById("bg");
+    const sprite = document.getElementById("sprite");
+    const speaker = document.getElementById("speaker");
+    const line = document.getElementById("line");
+    const nextBtn = document.getElementById("nextBtn");
+    const choices = document.getElementById("choices");
+    const affectionFill = document.getElementById("affectionFill");
+    const affectionText = document.getElementById("affectionText");
+    const toast = document.getElementById("toast");
+    const bgm = document.getElementById("bgm");
+    const musicBtn = document.getElementById("musicBtn");
+    const autoBtn = document.getElementById("autoBtn");
+    const skipBtn = document.getElementById("skipBtn");
+    const flash = document.getElementById("flash");
+    const ending = document.getElementById("ending");
+    const endingText = document.getElementById("endingText");
+    const restartBtn = document.getElementById("restartBtn");
+    const bonusBtn = document.getElementById("bonusBtn");
+    const titleScreen = document.getElementById("titleScreen");
+    const nicknameForm = document.getElementById("nicknameForm");
+    const nicknameInput = document.getElementById("nicknameInput");
+
+    bgm.volume = 0.38;
+
+    async function startMusic() {
+      if (!bgm.paused) return;
+      try {
+        await bgm.play();
+        musicBtn.textContent = "♫";
+        musicBtn.title = "배경음악 끄기";
+      } catch (error) {
+        musicBtn.textContent = "♪";
+      }
+    }
+
+    function toggleMusic() {
+      if (bgm.paused) {
+        startMusic();
+      } else {
+        bgm.pause();
+        musicBtn.textContent = "♪";
+        musicBtn.title = "배경음악 켜기";
+      }
+    }
+
+    function startGame() {
+      const name = nicknameInput.value.trim();
+      state.playerName = name || "주인공";
+      titleScreen.classList.add("hide");
+      startMusic();
+    }
+
+    function formatText(text) {
+      return String(text || "").replaceAll("{name}", state.playerName).replaceAll("{team}", state.teamName).replaceAll("{song}", state.songTitle);
+    }
+
+    function formatSpeaker(name) {
+      return name === "나" ? state.playerName : formatText(name);
+    }
+
+    function setBg(name) {
+      bg.className = `background bg-${name || "campus"}`;
+    }
+
+    function setSprite(name) {
+      const src = sprites[name || "none"];
+      if (!src) {
+        sprite.classList.add("hidden");
+        return;
+      }
+      if (!sprite.src.endsWith(src)) sprite.src = src;
+      sprite.classList.remove("hidden");
+      sprite.style.transform = name === "love"
+        ? "translateX(-50%) translateY(-4px) scale(1.02)"
+        : "translateX(-50%)";
+      sprite.style.filter = name === "sad"
+        ? "drop-shadow(0 30px 40px rgba(45, 32, 45, 0.2)) saturate(0.86)"
+        : "drop-shadow(0 30px 40px rgba(45, 32, 45, 0.26))";
+    }
+
+    function updateAffection(delta = 0) {
+      if (delta) {
+        state.affection = Math.max(0, Math.min(100, state.affection + delta));
+        toast.textContent = delta > 0 ? `설렘도 +${delta}` : `설렘도 ${delta}`;
+        toast.classList.add("show");
+        setTimeout(() => toast.classList.remove("show"), 950);
+      }
+      const value = Math.max(8, Math.min(100, state.affection));
+      affectionFill.style.width = `${value}%`;
+      affectionText.textContent = `${value}%`;
+    }
+
+    function typeText(text) {
+      const renderedText = formatText(text);
+      clearInterval(state.timer);
+      state.typing = true;
+      state.currentText = renderedText;
+      line.textContent = "";
+      let i = 0;
+      state.timer = setInterval(() => {
+        line.textContent += renderedText[i] || "";
+        i += 1;
+        if (i >= renderedText.length) {
+          clearInterval(state.timer);
+          state.typing = false;
+          if (state.auto && !scenes[state.index].choices && !scenes[state.index].input && !scenes[state.index].end) {
+            setTimeout(nextScene, 1150);
+          }
+        }
+      }, 24);
+    }
+
+    function showChoices(scene) {
+      choices.innerHTML = "";
+      choices.style.display = "grid";
+      nextBtn.style.display = "none";
+      scene.choices.forEach((choice) => {
+        const button = document.createElement("button");
+        button.className = "choice";
+        button.textContent = choice.label;
+        button.addEventListener("click", () => {
+          updateAffection(choice.affection);
+          flash.classList.add("on");
+          setTimeout(() => flash.classList.remove("on"), 260);
+          choices.style.display = "none";
+          nextBtn.style.display = "";
+          const insert = {
+            bg: scene.bg,
+            speaker: choice.speaker || "나",
+            sprite: choice.sprite || scene.sprite,
+            text: choice.result,
+            gameOver: choice.gameOver
+          };
+          scenes.splice(state.index + 1, 0, insert);
+          nextScene();
+        });
+        choices.appendChild(button);
+      });
+    }
+
+    function showInput(scene) {
+      choices.innerHTML = "";
+      choices.style.display = "grid";
+      nextBtn.style.display = "none";
+
+      const input = document.createElement("input");
+      input.className = "choice-input";
+      input.maxLength = 18;
+      input.placeholder = scene.input.placeholder;
+      input.setAttribute("aria-label", scene.input.placeholder);
+
+      const button = document.createElement("button");
+      button.className = "choice";
+      button.type = "button";
+      button.textContent = scene.input.button;
+
+      const submit = () => {
+        const value = input.value.trim();
+        if (scene.input.key === "teamName") state.teamName = value || "뭉게듀오";
+        if (scene.input.key === "songTitle") state.songTitle = value || "밤편지";
+        choices.style.display = "none";
+        nextBtn.style.display = "";
+        nextScene();
+      };
+
+      button.addEventListener("click", submit);
+      input.addEventListener("keydown", (event) => {
+        if (event.key === "Enter") {
+          event.preventDefault();
+          submit();
+        }
+      });
+
+      choices.appendChild(input);
+      choices.appendChild(button);
+      input.focus();
+    }
+
+    function renderScene() {
+      const scene = scenes[state.index];
+      setBg(scene.bg);
+      setSprite(scene.sprite);
+      speaker.textContent = formatSpeaker(scene.speaker);
+      choices.style.display = "none";
+      nextBtn.style.display = scene.choices || scene.input ? "none" : "";
+      if (scene.affection) updateAffection(scene.affection);
+      typeText(scene.text);
+      if (scene.choices) {
+        setTimeout(() => {
+          if (!state.typing) showChoices(scene);
+        }, formatText(scene.text).length * 24 + 120);
+      }
+      if (scene.input) {
+        setTimeout(() => {
+          if (!state.typing) showInput(scene);
+        }, formatText(scene.text).length * 24 + 120);
+      }
+      if (scene.end) {
+        nextBtn.textContent = "엔딩 보기";
+      } else if (scene.gameOver) {
+        nextBtn.textContent = "게임 오버";
+      } else {
+        nextBtn.textContent = "다음";
+      }
+    }
+
+    function nextScene() {
+      const scene = scenes[state.index];
+      if (state.typing) {
+        clearInterval(state.timer);
+        state.typing = false;
+        line.textContent = state.currentText;
+        if (scene.choices) showChoices(scene);
+        if (scene.input) showInput(scene);
+        return;
+      }
+      if (scene.end) {
+        showEnding();
+        return;
+      }
+      if (scene.gameOver) {
+        showGameOver();
+        return;
+      }
+      state.index += 1;
+      renderScene();
+    }
+
+    function showEnding() {
+      const grade = state.affection >= 90 ? "최고 설렘도" : state.affection >= 75 ? "달콤한 설렘도" : "포근한 설렘도";
+      ending.querySelector("h1").textContent = "러브 엔딩";
+      bonusBtn.style.display = "";
+      endingText.textContent = `${grade} ${state.affection}%로 조현우 선배와 연인이 되었습니다. 뭉게구름의 팀 ${state.teamName}은 정기공연을 성공적으로 마쳤고, ${state.songTitle}은 둘만의 첫 고백곡이 되었습니다.`;
+      ending.classList.add("show");
+    }
+
+    function showGameOver() {
+      ending.querySelector("h1").textContent = "게임 오버";
+      endingText.textContent = "고백은 거절됐고, 조현우 선배는 눈물과 함께 무대 뒤로 사라졌습니다. 다음 뭉게구름 합주에서 마이크 위치를 피해야 할지도 모릅니다.";
+      bonusBtn.style.display = "none";
+      ending.classList.add("show");
+    }
+
+    nextBtn.addEventListener("click", () => {
+      startMusic();
+      nextScene();
+    });
+    musicBtn.addEventListener("click", (event) => {
+      event.stopPropagation();
+      toggleMusic();
+    });
+    nicknameForm.addEventListener("submit", (event) => {
+      event.preventDefault();
+      startGame();
+    });
+    titleScreen.addEventListener("click", (event) => {
+      if (event.target.closest(".nickname-form")) return;
+      startGame();
+    });
+    titleScreen.addEventListener("touchstart", (event) => {
+      if (event.target.closest(".nickname-form")) return;
+      event.preventDefault();
+      startGame();
+    }, { passive: false });
+    restartBtn.addEventListener("click", () => {
+      window.location.reload();
+    });
+    bonusBtn.addEventListener("click", () => {
+      ending.classList.remove("show");
+      state.index = scenes.findIndex((scene) => scene.text.includes("나 {name}씨 많이 좋아해요"));
+      renderScene();
+    });
+    autoBtn.addEventListener("click", () => {
+      state.auto = !state.auto;
+      autoBtn.textContent = state.auto ? "Ⅱ" : "▶";
+      if (state.auto && !state.typing && !scenes[state.index].choices && !scenes[state.index].input) {
+        setTimeout(nextScene, 500);
+      }
+    });
+    skipBtn.addEventListener("click", () => {
+      if (state.typing) {
+        clearInterval(state.timer);
+        state.typing = false;
+        line.textContent = state.currentText;
+        if (scenes[state.index].choices) showChoices(scenes[state.index]);
+        if (scenes[state.index].input) showInput(scenes[state.index]);
+      } else if (choices.style.display === "grid") {
+        return;
+      } else {
+        nextScene();
+      }
+    });
+    window.addEventListener("keydown", (event) => {
+      if (event.key === " " || event.key === "Enter") {
+        event.preventDefault();
+        if (!titleScreen.classList.contains("hide")) {
+          startGame();
+          return;
+        }
+        startMusic();
+        if (choices.style.display === "grid") return;
+        nextScene();
+      }
+    });
+    window.addEventListener("pointerdown", startMusic, { once: true });
+
+    updateAffection();
+    renderScene();
+  </script>
+</body>
+</html>
